@@ -3,15 +3,19 @@ import AppKit
 /// Coordinates application flow between process state and AppKit UI.
 ///
 /// Status-item clicks open the menu or toggle caffeination, menu actions toggle
-/// caffeination or quit, and caffeination state changes re-render the UI. The
-/// coordinator contains wiring logic only; process, status-item, and menu
-/// details live in their respective controllers.
+/// caffeination, change settings, or quit, and state changes re-render the UI.
+/// The coordinator contains wiring logic only; process, login-item, status-item,
+/// and menu details live in their respective controllers.
 @MainActor
 final class AppCoordinator {
 
   /// Owner of the `/usr/bin/caffeinate` child process. Process lifecycle changes
   /// always go through this controller.
   private let caffeination = CaffeinationController()
+
+  /// Owner of the app's “Open at Login” registration. Login-item changes always
+  /// go through this controller.
+  private let launchAtLogin = LaunchAtLoginController()
 
   /// Owner of the menu-bar status item. It is rendered from
   /// `caffeination.isCaffeinated` whenever that state may have changed.
@@ -30,11 +34,13 @@ final class AppCoordinator {
     statusItem.onPrimaryClick = { [weak self] in self?.openMenu() }
     statusItem.onSecondaryClick = { [weak self] in self?.toggleCaffeination() }
 
-    menu.onToggle = { [weak self] in self?.toggleCaffeination() }
+    menu.onToggleCaffeination = { [weak self] in self?.toggleCaffeination() }
+    menu.onToggleOpenAtLogin = { [weak self] in self?.toggleOpenAtLogin() }
     menu.onQuit = { NSApp.terminate(nil) }
     menu.onClose = { [weak self] in self?.statusItem.detachMenu() }
 
     caffeination.onStateChange = { [weak self] in self?.render() }
+    launchAtLogin.onStateChange = { [weak self] in self?.render() }
 
     render()
   }
@@ -56,6 +62,17 @@ final class AppCoordinator {
     }
   }
 
+  /// Toggles whether the app opens when the user logs in. On success, callbacks
+  /// from the login controller re-render the UI; on failure, AppKit presents the
+  /// ServiceManagement error.
+  private func toggleOpenAtLogin() {
+    do {
+      try launchAtLogin.toggle()
+    } catch {
+      NSApp.presentError(error)
+    }
+  }
+
   /// Opens the menu from the status item. The menu remains owned by
   /// `MenuController` and will be detached after AppKit closes it.
   private func openMenu() {
@@ -66,6 +83,6 @@ final class AppCoordinator {
   private func render() {
     let state = caffeination.isCaffeinated
     statusItem.render(isCaffeinated: state)
-    menu.render(isCaffeinated: state)
+    menu.render(isCaffeinated: state, opensAtLogin: launchAtLogin.isEnabled)
   }
 }

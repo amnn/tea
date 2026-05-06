@@ -2,15 +2,22 @@ import AppKit
 
 /// Owns and renders the application's menu.
 ///
-/// This controller constructs the `NSMenu`, refreshes the caffeination toggle
-/// label, and lists current Prevent assertions. It delegates actions through
-/// callbacks and delegates assertion lookup to an `AssertionProviding` value.
+/// This controller constructs the `NSMenu`, refreshes the caffeination and
+/// “Open at Login” setting items, and lists current Prevent assertions. It
+/// delegates actions through callbacks and delegates assertion lookup to an
+/// `AssertionProviding` value.
 @MainActor
 final class MenuController: NSObject, NSMenuDelegate {
 
   /// Callback invoked by the Turn On/Turn Off item. The menu never starts or
-  /// stops caffeination directly and does not assume the state actually changed.
-  var onToggle: (() -> Void)?
+  /// stops caffeination directly and does not assume the state actually
+  /// changed.
+  var onToggleCaffeination: (() -> Void)?
+
+  /// Callback invoked by the “Open at Login” setting item. The menu never
+  /// updates ServiceManagement directly and does not assume the setting actually
+  /// changed.
+  var onToggleOpenAtLogin: (() -> Void)?
 
   /// Callback invoked by the Quit item. The menu does not terminate the app
   /// directly.
@@ -32,6 +39,10 @@ final class MenuController: NSObject, NSMenuDelegate {
   /// from this value.
   private var isCaffeinated = false
 
+  /// Last rendered login-item state. The “Open at Login” item checkmark is
+  /// rebuilt from this value.
+  private var opensAtLogin = false
+
   /// Creates a menu controller backed by an assertion provider. The provider is
   /// queried whenever the menu is rebuilt; after initialization the menu has this
   /// controller as its delegate and contains an initial stopped-state rendering.
@@ -42,11 +53,13 @@ final class MenuController: NSObject, NSMenuDelegate {
     rebuildMenu()
   }
 
-  /// Updates and rebuilds the menu for a caffeination state. `isCaffeinated` is
-  /// true when this app is currently preventing sleep via `caffeinate`; after the
-  /// call, the toggle item title reflects that value.
-  func render(isCaffeinated: Bool) {
+  /// Updates and rebuilds the menu for the current app state. `isCaffeinated` is
+  /// true when this app is currently preventing sleep via `caffeinate`;
+  /// `opensAtLogin` is true when the app should launch at login. After the call,
+  /// the toggle item title and setting checkmark reflect those values.
+  func render(isCaffeinated: Bool, opensAtLogin: Bool) {
     self.isCaffeinated = isCaffeinated
+    self.opensAtLogin = opensAtLogin
     rebuildMenu()
   }
 
@@ -63,9 +76,16 @@ final class MenuController: NSObject, NSMenuDelegate {
     onClose?()
   }
 
-  /// Handles selection of the caffeination toggle item by invoking `onToggle`.
+  /// Handles selection of the caffeination toggle item by invoking
+  /// `onToggleCaffeination`.
   @objc private func toggleCaffeination() {
-    onToggle?()
+    onToggleCaffeination?()
+  }
+
+  /// Handles selection of the “Open at Login” setting item by invoking
+  /// `onToggleOpenAtLogin`.
+  @objc private func toggleOpenAtLogin() {
+    onToggleOpenAtLogin?()
   }
 
   /// Handles selection of the Quit item by invoking `onQuit`.
@@ -81,6 +101,8 @@ final class MenuController: NSObject, NSMenuDelegate {
     menu.addItem(.separator())
     addAssertions()
     menu.addItem(.separator())
+    menu.addItem(openAtLoginMenuItem())
+    menu.addItem(.separator())
     menu.addItem(quitMenuItem())
   }
 
@@ -92,6 +114,18 @@ final class MenuController: NSObject, NSMenuDelegate {
       action: #selector(toggleCaffeination),
       keyEquivalent: "")
     item.target = self
+    return item
+  }
+
+  /// Builds the “Open at Login” setting item targeting this controller. The item
+  /// has AppKit's checkmark when enabled and no mark when disabled.
+  private func openAtLoginMenuItem() -> NSMenuItem {
+    let item = NSMenuItem(
+      title: "Open at Login",
+      action: #selector(toggleOpenAtLogin),
+      keyEquivalent: "")
+    item.target = self
+    item.state = opensAtLogin ? .on : .off
     return item
   }
 
