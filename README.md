@@ -1,9 +1,9 @@
-# Coffee
+# Tea
 
 A tiny macOS menu bar utility for toggling `caffeinate`.
 
-- Empty coffee cup outline: `caffeinate` is off.
-- Filled coffee cup: `caffeinate` is on.
+- Empty tea cup outline: `caffeinate` is off.
+- Filled tea cup: `caffeinate` is on.
 - Left-click the menu bar icon to open the menu.
 - Right-click the menu bar icon to toggle. Turning it on runs:
 
@@ -16,10 +16,11 @@ A tiny macOS menu bar utility for toggling `caffeinate`.
 For quick development:
 
 ```sh
-swift run Coffee
+swift run Tea
 ```
 
-The app runs as an accessory app, so it only appears in the menu bar. Stop it with `Ctrl-C` from the terminal while running via SwiftPM.
+The app runs as an accessory app, so it only appears in the menu bar. Stop it
+with `Ctrl-C` from the terminal while running via SwiftPM.
 
 For a normal macOS menu bar app launch:
 
@@ -33,20 +34,16 @@ just run
 swift build -c release
 ```
 
-The executable will be at `.build/release/Coffee`. `just app` wraps that executable in `.build/Coffee.app` using the checked-in `Resources/Info.plist` with `LSUIElement` enabled.
+The executable will be at `.build/release/Tea`. `just app` wraps that
+executable in `.build/Tea.app` using the checked-in `Resources/Info.plist` with
+`LSUIElement` enabled.
 
 Useful commands:
 
 ```sh
 just build    # release SwiftPM build
-just app      # build .build/Coffee.app
-just run      # build and open .build/Coffee.app
-just restart  # kill Coffee, rebuild, and reopen
+just app      # build .build/Tea.app
+just run      # build and open .build/Tea.app
+just restart  # kill Tea, rebuild, and reopen
 just clean    # remove .build
 ```
-
-## Possible next steps
-
-- Add a small preferences UI or config file for custom `caffeinate` flags.
-- Add a dropdown menu showing current power assertions from `pmset -g assertions`.
-- Package as a `.app` bundle with `LSUIElement` for login/startup use.

@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>Coffee</string>
+    <string>Tea</string>
     <key>CFBundleIdentifier</key>
-    <string>io.github.amnn.coffee</string>
+    <string>io.github.amnn.tea</string>
     <key>CFBundleName</key>
-    <string>Coffee</string>
+    <string>Tea</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>LSMinimumSystemVersion</key>

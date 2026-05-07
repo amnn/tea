@@ -3,8 +3,8 @@
 import PackageDescription
 
 let package = Package(
-  name: "Coffee",
+  name: "Tea",
   platforms: [.macOS(.v13)],
-  products: [.executable(name: "Coffee", targets: ["Coffee"])],
-  targets: [.executableTarget(name: "Coffee")]
+  products: [.executable(name: "Tea", targets: ["Tea"])],
+  targets: [.executableTarget(name: "Tea")]
 )

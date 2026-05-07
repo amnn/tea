@@ -32,7 +32,7 @@ final class StatusItemController: NSObject {
       button.target = self
       button.action = #selector(statusItemClicked)
       button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-      button.toolTip = "Coffee"
+      button.toolTip = "Tea"
     }
   }
 
@@ -93,7 +93,7 @@ private func statusIcon(caffeinated: Bool) -> NSImage? {
   let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
 
   guard
-    let symbol = NSImage(systemSymbolName: name, accessibilityDescription: "Coffee")?
+    let symbol = NSImage(systemSymbolName: name, accessibilityDescription: "Tea")?
       .withSymbolConfiguration(config)
   else {
     return nil

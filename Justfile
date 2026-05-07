@@ -1,4 +1,4 @@
-name := "Coffee"
+name := "Tea"
 app := ".build/" + name + ".app"
 contents := app + "/Contents"
 macos := contents + "/MacOS"
