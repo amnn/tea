@@ -1,5 +1,10 @@
 # Tea
 
+<p align="center">
+  <img src="Resources/AppIcon.png" alt="Tea app icon" height="396">
+  <img src="Resources/Screenshot.png" alt="Tea running in the macOS menu bar" height="396">
+</p>
+
 A tiny macOS menu bar utility for toggling `caffeinate`.
 
 - Empty tea cup outline: `caffeinate` is off.
