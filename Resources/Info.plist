@@ -6,6 +6,8 @@
     <string>Tea</string>
     <key>CFBundleIdentifier</key>
     <string>io.github.amnn.tea</string>
+    <key>CFBundleIconFile</key>
+    <string>Tea</string>
     <key>CFBundleName</key>
     <string>Tea</string>
     <key>CFBundlePackageType</key>
