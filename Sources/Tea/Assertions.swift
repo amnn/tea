@@ -50,6 +50,14 @@ struct PmsetAssertionProvider: AssertionProviding {
   /// types sorted after known types by their raw name.
   func currentPreventAssertions() -> [AssertionGroup] {
     guard let output = pmsetAssertionsOutput() else { return [] }
+    return Self.parsePreventAssertions(output)
+  }
+
+  /// Groups Prevent assertions from raw `pmset` stdout. Device names can contain
+  /// invalid UTF-8 (even on unrelated assertion lines), so replace malformed
+  /// bytes rather than discarding the entire assertion list.
+  static func parsePreventAssertions(_ data: Data) -> [AssertionGroup] {
+    let output = String(decoding: data, as: UTF8.self)
 
     var processNamesByType: [String: [String]] = [:]
     for line in output.components(separatedBy: .newlines) {
@@ -63,9 +71,9 @@ struct PmsetAssertionProvider: AssertionProviding {
   }
 }
 
-/// Returns stdout from `/usr/bin/pmset -g assertions`, or `nil` if the command
-/// cannot be launched or its output is not UTF-8.
-private func pmsetAssertionsOutput() -> String? {
+/// Returns raw stdout from `/usr/bin/pmset -g assertions`, or `nil` if the
+/// command cannot be launched.
+private func pmsetAssertionsOutput() -> Data? {
   let process = Process()
   let pipe = Pipe()
   process.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
@@ -80,8 +88,7 @@ private func pmsetAssertionsOutput() -> String? {
     return nil
   }
 
-  let data = pipe.fileHandleForReading.readDataToEndOfFile()
-  return String(data: data, encoding: .utf8)
+  return pipe.fileHandleForReading.readDataToEndOfFile()
 }
 
 /// Parses a single `pmset` assertion line. The line may contain leading
