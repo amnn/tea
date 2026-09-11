@@ -55,7 +55,8 @@ just clean    # remove .build
 
 ## Tests
 
-The parser and menu regression tests use Swift Testing (Swift 6 or later):
+The assertion-provider and menu regression tests use Swift Testing
+(Swift 6 or later):
 
 ```sh
 swift test
