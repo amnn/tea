@@ -63,10 +63,10 @@ final class MenuController: NSObject, NSMenuDelegate {
     rebuildMenu()
   }
 
-  /// Refreshes menu contents immediately before AppKit displays the menu. AppKit
-  /// supplies `menu`; it is expected to be this controller's menu. The visible
-  /// assertion list is fresh after this method returns.
-  func menuWillOpen(_ menu: NSMenu) {
+  /// Refreshes menu contents before AppKit lays out and displays the menu.
+  /// Structural changes belong here, not in `menuWillOpen`, where AppKit forbids
+  /// modifying menu items. The assertion list is fresh after this method returns.
+  func menuNeedsUpdate(_ menu: NSMenu) {
     rebuildMenu()
   }
 

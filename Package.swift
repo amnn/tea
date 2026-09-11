@@ -6,5 +6,8 @@ let package = Package(
   name: "Tea",
   platforms: [.macOS(.v13)],
   products: [.executable(name: "Tea", targets: ["Tea"])],
-  targets: [.executableTarget(name: "Tea")]
+  targets: [
+    .executableTarget(name: "Tea"),
+    .testTarget(name: "TeaTests", dependencies: ["Tea"]),
+  ]
 )
