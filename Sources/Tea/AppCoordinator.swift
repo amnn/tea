@@ -29,7 +29,7 @@ final class AppCoordinator {
   /// Call this on the main actor after `NSApplication` has been configured.
   init() {
     statusItem = StatusItemController()
-    menu = MenuController(assertionProvider: PmsetAssertionProvider())
+    menu = MenuController(assertionProvider: IOKitAssertionProvider())
 
     statusItem.onPrimaryClick = { [weak self] in self?.openMenu() }
     statusItem.onSecondaryClick = { [weak self] in self?.toggleCaffeination() }
